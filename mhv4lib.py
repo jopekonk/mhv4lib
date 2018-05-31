@@ -158,7 +158,7 @@ class MHV4():
 		linestr = reading.decode('utf8')
 		return linestr
 	
-	def get_polarity(self,channel):
+	def get_temp_comp(self,channel):
 		""" not tested ! Get complete settings for temperature compensation of 
 		given channel"""
 		self.ser.write(b'RTC %d\r' % channel)
