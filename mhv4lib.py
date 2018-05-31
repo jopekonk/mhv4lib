@@ -47,7 +47,7 @@ class MHV4():
 		:param channel: The channel number that is to be turned OFF.
 		"""
 		
-		if n not in [0,1,2,3,4]: return
+		if channel not in [0,1,2,3,4]: return
 		
 		self.ser.write(b'OFF %d\r' % channel)
 		time.sleep(0.1)
