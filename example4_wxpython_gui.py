@@ -297,11 +297,16 @@ def main():
 				break
 		if unit.port == '':
 			print("MHV-4 unit (" + str(unit.serial) + "," + str(unit.name) + ") was not found.")	
-			foundmhv4units.append(unit)		
+			foundmhv4units.append(unit) # UNCOMMENT HERE TO DEBUG AND TEST WITH 'DUMMY' UNITS
 		else :
 			foundmhv4units.append(unit)
 			unit.connect()
-
+	
+	if ( 0 == len(foundmhv4units) ) :
+		print('No MHV-4 units found in any of the USB ports with the given serial numbers!')
+		print('Exiting....')
+		exit()
+		
 	app = wx.App()
 	gui = MHV4GUI(None, 'MHV4GUI', foundmhv4units)
 	gui.Show()
