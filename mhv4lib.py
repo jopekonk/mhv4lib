@@ -203,10 +203,10 @@ class MHV4():
 		The possible channel numbers are 0,1,2,3. Number 4 applies to ALL channels.
 		
 		:param channel: The channel number that the current limit setting is applied to.
-		:param voltage: The current value that is to be set for the channel in units of nA.
+		:param limit: The current limit value that is to be set for the channel in units of nA.
 		"""
 
-		self.ser.write(b'SIL %d %d\r' % (channel, limit)) # in nano amps
+		self.ser.write(b'SIL %d %d\r' % (channel, limit)) # in nano amps for Mesytec
 		time.sleep(0.1)
 		self.ser.readline()
 		response = self.ser.readline()
@@ -217,9 +217,9 @@ class MHV4():
 		The possible channel numbers are 0,1,2,3. Number 4 applies to ALL channels.
 		
 		:param channel: The channel number that the voltage limit setting is applied to.
-		:param voltage: The voltage value that is to be set for the channel in units of Volts.
+		:param limit: The voltage limit value that is to be set for the channel in units of Volts.
 		"""
-		self.ser.write(b'SUL %d %d\r' % (channel, limit*10)) # in nano amps
+		self.ser.write(b'SUL %d %d\r' % (channel, limit*10)) # given in units of 0.1 V for Mesytec
 		time.sleep(0.1)
 		self.ser.readline()
 		response = self.ser.readline()
@@ -238,7 +238,7 @@ class MHV4():
 				After switching: set presets again to desired values.
 				
 		:param channel: The channel number that the polarity change is applied to.
-		:param pol: The desired polarity of the voltage for the channel.
+		:param pol: The desired polarity of the voltage for the channel 0 or 1.
 		"""
 		self.ser.write(b'SP %d %d\r' % (channel, pol))
 		time.sleep(0.1)
