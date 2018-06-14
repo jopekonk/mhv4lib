@@ -33,7 +33,7 @@ class MHV4():
 
 		"""
 		if command == '': return ''
-		self.ser.write( bytes(command, 'utf8') # works better with older Python3 versions (<3.5)
+		self.ser.write( bytes(command, 'utf8') ) # works better with older Python3 versions (<3.5)
 		time.sleep(0.1)
 		self.ser.readline() # read out echoed command
 		return self.ser.readline() # return response from the unit
