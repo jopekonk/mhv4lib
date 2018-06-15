@@ -28,7 +28,7 @@ class MHV4():
 		"""
 		self.ser.close()
 		
-	def send_command(command=''):
+	def send_command(self, command=''):
 		"""The function sends a command to the unit and returns the response string. 
 
 		"""
