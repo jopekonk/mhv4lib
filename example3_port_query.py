@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 # Example script to query for the serial number of the Mesytec MHV-4 unit
 # that is connected to the USB port

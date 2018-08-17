@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 # Example script to set and read voltages from a Mesytec MHV-4 unit
 # using the USB port for serial communication
