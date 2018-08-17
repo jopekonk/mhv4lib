@@ -13,11 +13,14 @@ __copyright__ = "2018 Joonas Konki"
 import serial
 import time
 import re
+from lockfile import LockFile
 
 VOLTAGE_LIMIT = 100
+LOCK_TIMEOUT = 5
 
 class MHV4():
 	def __init__(self,port,baud):
+		self.lock = LockFile('/tmp/.lockmhv4lib_'+port[4:])
 		self.port = port
 		self.ser = serial.Serial( port=self.port, baudrate=baud, timeout=1 )
 
@@ -32,10 +35,23 @@ class MHV4():
 
 		"""
 		if command == '': return ''
-		self.ser.write( bytes(command, 'utf8') ) # works better with older Python3 versions (<3.5)
-		time.sleep(0.1)
-		self.ser.readline() # read out echoed command
-		return self.ser.readline() # return response from the unit
+
+		# Use lockfile to block sending multiple commands to the same unit at a timeout
+		try:
+			self.lock.acquire(timeout=LOCK_TIMEOUT)
+			if lock.is_locked():
+				print('Lockfile acquired: ' + '/tmp/.lockmhv4lib_'+port[4:])
+			self.ser.write( bytes(command, 'utf8') ) # works better with older Python3 versions (<3.5)
+			time.sleep(0.1)
+			self.ser.readline() # read out echoed command
+			return self.ser.readline() # return response from the unit
+			self.lock.release()
+			if not lock.is_locked():
+					print('Lock released')
+					
+		except LockTimeout:
+			return ''
+
 
 	def set_on(self,channel):
 		"""The function turns the voltage ON for the given ``channel`` number.
