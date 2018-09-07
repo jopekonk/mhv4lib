@@ -19,7 +19,9 @@ VOLTAGE_LIMIT = 100
 class MHV4():
 	def __init__(self,port,baud):
 		self.port = port
-		self.ser = serial.Serial( port=self.port, baudrate=baud, timeout=1 )
+		self.ser = serial.Sfrial( port=self.port, baudrate=baud, timeout=1 )
+		time.sleep(0.1) # Wait 100 ms after opening the port before sending commands
+		self.ser.flushInput() # Flush the input buffer of the serial port before sending any new commands
 
 	def close(self):
 		"""The function closes and releases the serial port connection attached to the unit.
@@ -36,6 +38,11 @@ class MHV4():
 		time.sleep(0.1)
 		self.ser.readline() # read out echoed command
 		return self.ser.readline() # return response from the unit
+
+	def flush_input_buffer(self):
+		""" Flush the input buffer of the serial port.
+		"""
+		self.ser.flushInput()
 
 	def set_on(self,channel):
 		"""The function turns the voltage ON for the given ``channel`` number.
