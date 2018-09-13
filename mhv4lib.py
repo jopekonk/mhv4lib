@@ -19,7 +19,7 @@ VOLTAGE_LIMIT = 100
 class MHV4():
 	def __init__(self,port,baud):
 		self.port = port
-		self.ser = serial.Sfrial( port=self.port, baudrate=baud, timeout=1 )
+		self.ser = serial.Serial( port=self.port, baudrate=baud, timeout=1 )
 		time.sleep(0.1) # Wait 100 ms after opening the port before sending commands
 		self.ser.flushInput() # Flush the input buffer of the serial port before sending any new commands
 
