@@ -17,43 +17,43 @@ from lockfile import LockFile
 
 VOLTAGE_LIMIT = 100
 LOCK_TIMEOUT = 5
+LOCK_PATH = '/tmp/'
 
 class MHV4():
 	def __init__(self,port,baud):
-		self.lock = LockFile('/tmp/.lockmhv4lib_'+port[4:])
-		self.port = port
-		self.ser = serial.Serial( port=self.port, baudrate=baud, timeout=1 )
-		time.sleep(0.1) # Wait 100 ms after opening the port before sending commands
-		self.ser.flushInput() # Flush the input buffer of the serial port before sending any new commands
+		lockfile = '.mhv4lib.'+port[4:]+'.lock'
+		self.lock = LockFile(LOCK_PATH + lock_file)
+		try:
+			self.lock.acquire(timeout=LOCK_TIMEOUT)
+			if lock.is_locked():
+				print('Lockfile acquired successfully: ' + LOCK_PATH + lockfile )
+				self.port = port
+				self.ser = serial.Serial( port=self.port, baudrate=baud, timeout=1 )
+				time.sleep(0.1) # Wait 100 ms after opening the port before sending commands
+				self.ser.flushInput() # Flush the input buffer of the serial port before sending any new commands
+				time.sleep(0.1)
+		except LockTimeout:
+			print('Lockfile could not be acquired for port ' + port)
+			print('Is there another program using mhv4lib ??')
+
+
 
 	def close(self):
 		"""The function closes and releases the serial port connection attached to the unit.
 
 		"""
 		self.ser.close()
+		self.lock.release()
 
 	def send_command(self, command=''):
 		"""The function sends a command to the unit and returns the response string.
 
 		"""
 		if command == '': return ''
-
-		# Use lockfile to block sending multiple commands to the same unit at a timeout
-		try:
-			self.lock.acquire(timeout=LOCK_TIMEOUT)
-			if lock.is_locked():
-				print('Lockfile acquired: ' + '/tmp/.lockmhv4lib_'+port[4:])
-			self.ser.write( bytes(command, 'utf8') ) # works better with older Python3 versions (<3.5)
-			time.sleep(0.1)
-			self.ser.readline() # read out echoed command
-			return self.ser.readline() # return response from the unit
-			self.lock.release()
-			if not lock.is_locked():
-					print('Lock released')
-					
-		except LockTimeout:
-			return ''
-
+		self.ser.write( bytes(command, 'utf8') ) # works better with older Python3 versions (<3.5)
+		time.sleep(0.1)
+		self.ser.readline() # read out echoed command
+		return self.ser.readline() # return response from the unit
 
 	def flush_input_buffer(self):
 		""" Flush the input buffer of the serial port.
